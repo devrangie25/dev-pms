@@ -26,8 +26,8 @@ If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has a
 	1. If you're using PNPM: pnpm create vite
 	1. Then follow the prompts
 2. Add Vuetify3 to the vite project:
-	2. If you're using Vue CLI to add vuetify, run this command: vue add vuetify, then select the vuetify3.
-	2. If you're using YARN to add the vuetify, yarn add vuetify@^3.1.10 - check this link https://vuetifyjs.com/en/getting-started/installation/
+	1. If you're using Vue CLI to add vuetify, run this command: vue add vuetify, then select the vuetify3.
+	1. If you're using YARN to add the vuetify, yarn add vuetify@^3.1.10 - check this link https://vuetifyjs.com/en/getting-started/installation/
 	
 	
 ## References: 
