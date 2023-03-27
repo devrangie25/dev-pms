@@ -70,7 +70,7 @@ export default defineComponent({
 
         return {
             props,
-            density,
+            density
         };
     },
 });

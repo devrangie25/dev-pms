@@ -4,6 +4,16 @@
     </v-card>
 </template>
 
-<script setup lang="ts"></script>
+<script lang="ts" setup>
+import { onMounted, inject } from 'vue'
 
-<style scoped></style>
+const supabase: any = inject('supabase');
+
+async function getSampleDb() {
+  const { data } = await supabase.from('tbl_users').select('*')
+}
+
+onMounted(() => {
+  getSampleDb()
+})
+</script>

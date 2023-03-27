@@ -5,9 +5,12 @@ import { loadFonts } from './plugins/webfontloader'
 import router from './route/index'
 import { registerLayouts } from './layouts/register';
 import { registerComponents } from './components/register';
+import { supabase } from './lib/supabaseClient';
+import mitt from 'mitt'
 
 loadFonts()
 
+const emitter = mitt()
 const app = createApp(App)
 
 app.use(vuetify)
@@ -15,5 +18,8 @@ app.use(router)
 
 registerLayouts(app);
 registerComponents(app);
+
+app.provide('supabase', supabase)
+app.provide('emitter', emitter)
 
 app.mount('#app')
