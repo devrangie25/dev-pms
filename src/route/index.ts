@@ -9,6 +9,10 @@ import Calendar from "../views/authenticated/Calendar.vue";
 import Revenue from "../views/authenticated/Revenue.vue";
 import Blank from "../views/Blank.vue";
 
+// For Authentication
+import Login from '../views/public/Login.vue';
+import Signup from '../views/public/Signup.vue';
+
 const routes: RouteRecordRaw[] = [
     {
         path: "/",
@@ -69,6 +73,26 @@ const routes: RouteRecordRaw[] = [
             icon: "",
             auth: false,
         },
+    },
+    {
+        path: '/auth/login',
+        name: 'auth-login',
+        component: Login,
+        meta: {
+            layout: 'PublicLayout',
+            icon: "",
+            auth: true,
+        }
+    },
+    {
+        path: '/auth/signup',
+        name: 'auth-signup',
+        component: Signup,
+        meta: {
+            layout: 'PublicLayout',
+            icon: "",
+            auth: true,
+        }
     },
     {
         path: "/blank",
