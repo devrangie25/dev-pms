@@ -39,7 +39,7 @@ export default defineComponent({
         },
         color: {
             type: String,
-            default: "primary",
+            default: "default",
             required: false,
         },
         density: {
