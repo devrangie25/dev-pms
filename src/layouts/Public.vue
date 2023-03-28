@@ -1,5 +1,5 @@
 <template>
-    <v-card color="#3aafae">
+    <v-card class="rounded-0">
         <v-layout>
             <v-main style="height: 100vh">
                 <slot />
