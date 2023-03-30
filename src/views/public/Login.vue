@@ -48,12 +48,14 @@
                             </base-button>
                         </v-col>
                     </v-row>
-                
+
                     <v-row class="py-2">
                         <v-col cols="12">
                             <div class="separator">
                                 <div class="line"></div>
-                                <span class="px-2 text-grey text-caption">or continue with email</span>
+                                <span class="px-2 text-grey text-caption"
+                                    >or continue with email</span
+                                >
                                 <div class="line"></div>
                             </div>
                         </v-col>
@@ -140,19 +142,32 @@
                 </v-card-text>
             </v-card>
         </v-col>
-        <v-col cols="6" class="image-section">
-        </v-col>
+        <v-col cols="6" class="image-section"> </v-col>
     </v-row>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, inject } from "vue";
 
 export default defineComponent({
     name: "PageLogin",
 
     setup() {
-        return {};
+        const supabase: any = inject("supabase");
+
+        async function loginWithProvider() {
+            try {
+                const { data, error } = await supabase.auth.signInWithOAuth({
+                    provider: "google",
+                });
+            } catch (error: any) {
+                console.error("Error captured", error);
+            }
+        }
+
+        return {
+            loginWithProvider,
+        };
     },
 });
 </script>
@@ -169,13 +184,13 @@ export default defineComponent({
 }
 
 .image-section {
-  background-image: url("../../../public/bg-img-2.jpg");
-  background-color: #3c5a77 !important;
-  background-blend-mode: multiply !important;
-  background-repeat: no-repeat !important;
-  background-size: cover !important;
-  background-position: center !important;
-  opacity: 0.8 !important;
+    background-image: url("../../../public/bg-img-2.jpg");
+    background-color: #3c5a77 !important;
+    background-blend-mode: multiply !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+    background-position: center !important;
+    opacity: 0.8 !important;
 }
 
 .separator {
@@ -186,6 +201,6 @@ export default defineComponent({
 .separator .line {
     flex: 1;
     height: 1px;
-    background-color: #D3D3D3;
+    background-color: #d3d3d3;
 }
 </style>

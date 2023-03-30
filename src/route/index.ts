@@ -1,4 +1,6 @@
 import { createWebHistory, createRouter, RouteRecordRaw } from "vue-router";
+import { useAuthStore } from "../stores/auth";
+import { storeToRefs } from "pinia";
 
 import Home from "../views/authenticated/Home.vue";
 import Error from "../views/Error.vue";
@@ -21,7 +23,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
             layout: 'AuthenticatedLayout',
             icon: "",
-            auth: false,
+            auth: true,
         },
     },
     {
@@ -31,7 +33,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
             layout: 'AuthenticatedLayout',
             icon: "",
-            auth: false,
+            auth: true,
         },
     },
     {
@@ -51,7 +53,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
             layout: 'AuthenticatedLayout',
             icon: "",
-            auth: false,
+            auth: true,
         },
     },
     {
@@ -61,7 +63,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
             layout: 'AuthenticatedLayout',
             icon: "",
-            auth: false,
+            auth: true,
         },
     },
     {
@@ -71,7 +73,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
             layout: 'AuthenticatedLayout',
             icon: "",
-            auth: false,
+            auth: true,
         },
     },
     {
@@ -81,7 +83,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
             layout: 'PublicLayout',
             icon: "",
-            auth: true,
+            auth: false,
         }
     },
     {
@@ -91,7 +93,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
             layout: 'PublicLayout',
             icon: "",
-            auth: true,
+            auth: false,
         }
     },
     {
@@ -111,8 +113,16 @@ const routes: RouteRecordRaw[] = [
 ];
 
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHistory(import.meta.env.APP_URL),
     routes,
 });
+
+router.beforeEach((to) => {
+    const authStore = useAuthStore()
+    const { isUser } = storeToRefs(authStore);
+    if (to.meta.auth && !isUser.value) {
+        return '/auth/login'
+    }
+  })
 
 export default router;
