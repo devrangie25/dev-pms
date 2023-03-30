@@ -112,6 +112,7 @@
                                 variant="flat"
                                 width="100%"
                                 height="56"
+                                @click="onLogin"
                             >
                                 <template v-slot:content>
                                     <span
@@ -148,12 +149,16 @@
 
 <script lang="ts">
 import { defineComponent, inject } from "vue";
+import { useRouter } from "vue-router";
+import { useAuthStore } from "../../stores/auth";
 
 export default defineComponent({
     name: "PageLogin",
 
     setup() {
         const supabase: any = inject("supabase");
+        const authStore = useAuthStore()
+        const router = useRouter()
 
         async function loginWithProvider() {
             try {
@@ -165,8 +170,14 @@ export default defineComponent({
             }
         }
 
+        function onLogin() {
+            authStore.login()
+            router.push({ name: "projects" })
+        }
+
         return {
             loginWithProvider,
+            onLogin
         };
     },
 });

@@ -1,13 +1,18 @@
-import { defineStore } from 'pinia';
+import { defineStore } from "pinia";
 
-export const useAuthStore = defineStore('auth', {
+export const useAuthStore = defineStore("auth", {
     state: () => ({
-        isUser: true
+        isAuthenticated: false,
     }),
     getters: {
-        
+        getIsAuthenticated: (state) => state.isAuthenticated,
     },
     actions: {
-        
+        login() {
+            this.isAuthenticated = true;
+        },
+        logout() {
+            this.isAuthenticated = false;
+        },
     },
 });

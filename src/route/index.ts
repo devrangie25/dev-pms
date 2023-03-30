@@ -1,6 +1,6 @@
 import { createWebHistory, createRouter, RouteRecordRaw } from "vue-router";
 import { useAuthStore } from "../stores/auth";
-import { storeToRefs } from "pinia";
+import { authGuard, guestGuard } from '../guards';
 
 import Home from "../views/authenticated/Home.vue";
 import Error from "../views/Error.vue";
@@ -25,6 +25,7 @@ const routes: RouteRecordRaw[] = [
             icon: "",
             auth: true,
         },
+        beforeEnter: authGuard,
     },
     {
         path: "/projects",
@@ -35,6 +36,7 @@ const routes: RouteRecordRaw[] = [
             icon: "",
             auth: true,
         },
+        beforeEnter: authGuard,
     },
     {
         path: "/user",
@@ -45,6 +47,7 @@ const routes: RouteRecordRaw[] = [
             icon: "",
             auth: false,
         },
+        beforeEnter: authGuard,
     },
     {
         path: "/settings",
@@ -55,6 +58,7 @@ const routes: RouteRecordRaw[] = [
             icon: "",
             auth: true,
         },
+        beforeEnter: authGuard,
     },
     {
         path: "/calendar",
@@ -65,6 +69,7 @@ const routes: RouteRecordRaw[] = [
             icon: "",
             auth: true,
         },
+        beforeEnter: authGuard,
     },
     {
         path: "/revenue",
@@ -75,26 +80,29 @@ const routes: RouteRecordRaw[] = [
             icon: "",
             auth: true,
         },
+        beforeEnter: authGuard,
     },
     {
         path: '/auth/login',
-        name: 'auth-login',
+        name: 'login',
         component: Login,
         meta: {
             layout: 'PublicLayout',
             icon: "",
             auth: false,
-        }
+        },
+        beforeEnter: guestGuard,
     },
     {
         path: '/auth/signup',
-        name: 'auth-signup',
+        name: 'signup',
         component: Signup,
         meta: {
             layout: 'PublicLayout',
             icon: "",
             auth: false,
-        }
+        },
+        beforeEnter: guestGuard,
     },
     {
         path: "/blank",
@@ -117,12 +125,13 @@ const router = createRouter({
     routes,
 });
 
-router.beforeEach((to) => {
+router.beforeEach((to, from, next) => {
     const authStore = useAuthStore()
-    const { isUser } = storeToRefs(authStore);
-    if (to.meta.auth && !isUser.value) {
-        return '/auth/login'
+    if (to.name !== 'login' && !authStore.isAuthenticated) {
+      next({ name: 'login' });
+    } else {
+      next();
     }
-  })
+  });
 
 export default router;
