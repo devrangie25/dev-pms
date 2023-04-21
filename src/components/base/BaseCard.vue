@@ -2,7 +2,9 @@
     <v-card
         :class="props.cardClass"
         :width="props.width"
+        :min-width="props.minWidth"
         :height="props.height"
+        :min-height="props.minHeight"
         :flat="props.flat"
         :rounded="props.rounded"
         :color="props.color"
@@ -41,7 +43,6 @@ export default defineComponent({
         },
         height: {
             type: String,
-            default: "200",
             required: false,
         },
         flat: {
@@ -59,6 +60,14 @@ export default defineComponent({
             default: "#ffffff",
             required: false,
         },
+        minWidth: {
+            type: String,
+            required: false,
+        },
+        minHeight: {
+            type: String,
+            required: false,
+        }
     },
 
     setup(props) {

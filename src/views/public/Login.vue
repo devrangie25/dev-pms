@@ -1,6 +1,6 @@
 <template>
     <v-row no-gutters>
-        <v-col cols="6" class="login-card-section">
+        <v-col cols="12" lg="6" class="login-card-section">
             <v-card
                 color="transparent"
                 class="mx-auto rounded-lg pa-4"
@@ -24,6 +24,7 @@
                                 btnClass="mr-4"
                                 width="100%"
                                 height="56"
+                                @click="loginWithProvider"
                             >
                                 <template v-slot:content>
                                     <v-img src="/google.png" width="25" />
@@ -143,7 +144,7 @@
                 </v-card-text>
             </v-card>
         </v-col>
-        <v-col cols="6" class="image-section"> </v-col>
+        <v-col cols="12" lg="6" class="image-section d-none d-lg-flex"> </v-col>
     </v-row>
 </template>
 
@@ -157,22 +158,25 @@ export default defineComponent({
 
     setup() {
         const supabase: any = inject("supabase");
-        const authStore = useAuthStore()
-        const router = useRouter()
+        const authStore = useAuthStore();
+        const router = useRouter();
 
         async function loginWithProvider() {
             try {
                 const { data, error } = await supabase.auth.signInWithOAuth({
                     provider: "google",
                 });
+
+                console.log('data', data)
+                debugger
             } catch (error: any) {
                 console.error("Error captured", error);
             }
         }
 
         function onLogin() {
-            authStore.login()
-            router.push({ name: "projects" })
+            authStore.login();
+            router.push({ name: "projects" });
         }
 
         return {

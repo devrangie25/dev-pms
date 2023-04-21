@@ -8,6 +8,7 @@
         :icon="isIcon"
         :size="props.size"
         :to="props.to"
+        :type="props.type"
     >
         <slot name="content" />
     </v-btn>
@@ -60,6 +61,11 @@ export default defineComponent({
         to: {
             type: undefined,
             default: undefined,
+            required: false
+        },
+        type: {
+            type: String,
+            default: 'submit',
             required: false
         }
     },

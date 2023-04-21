@@ -5,6 +5,7 @@ export interface Credentials {
 }
 
 export interface Project {
+    id?: string | number | undefined;
     title?: string | undefined;
     description?: string | undefined;
     contributors?: Array<string> | undefined;
@@ -15,4 +16,17 @@ export interface Project {
     category?: string | undefined;
     color?: string | undefined;
     client?: string | undefined;
+}
+
+export enum Breakpoints {
+    XS = 0,
+    SM = 600,
+    MD = 960,
+    LG = 1280,
+    XL = 1920,
+}
+
+export interface ScreenSize {
+    width: number;
+    height: number;
 }

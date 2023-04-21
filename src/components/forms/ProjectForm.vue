@@ -1,5 +1,5 @@
 <template>
-    <v-form validate-on="submit">
+    <v-form @submit.prevent="submitForm">
         <v-row class="mb-4">
             <v-col cols="12">
                 <v-text-field
@@ -7,6 +7,7 @@
                     label="Title"
                     hide-details="auto"
                     variant="outlined"
+                    counter="25"
                 ></v-text-field>
             </v-col>
             <v-col cols="12">
@@ -15,7 +16,8 @@
                     label="Description"
                     hide-details="auto"
                     variant="outlined"
-                    rows="2"
+                    rows="3"
+                    counter="300"
                 ></v-textarea>
             </v-col>
             <v-col cols="6">
@@ -65,28 +67,25 @@
             </v-col>
             <v-col cols="6">
                 <v-select
-                    v-model="form.color"
-                    :items="projectCardColors"
-                    label="Select Card Color"
-                    hide-details="auto"
-                    variant="outlined"
-                ></v-select>
-            </v-col>
-            <v-col cols="12">
-                <v-select
                     v-model="form.contributors"
                     :items="projectContributors"
-                    label="Contributors"
-                    multiple
                     hide-details="auto"
+                    label="Contributors"
                     variant="outlined"
+                    multiple
                 ></v-select>
             </v-col>
         </v-row>
 
         <v-row>
             <v-col cols="6">
-                <base-button color="#6B728E" variant="flat" block height="50" @click="onCancel">
+                <base-button
+                    color="#6B728E"
+                    variant="flat"
+                    block
+                    height="50"
+                    @click="onCancel"
+                >
                     <template v-slot:content>
                         <span class="text-none text-white text-button">
                             Cancel
@@ -95,7 +94,13 @@
                 </base-button>
             </v-col>
             <v-col cols="6">
-                <base-button color="#3aafae" variant="flat" block height="50" @click="onSubmit">
+                <base-button
+                    color="#3aafae"
+                    variant="flat"
+                    block
+                    height="50"
+                    type="submit"
+                >
                     <template v-slot:content>
                         <span class="text-none text-white text-button">
                             Save
@@ -108,7 +113,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref, inject } from "vue";
+import { defineComponent, inject } from "vue";
+import {
+    projectClients,
+    projectStatuses,
+    projectCategories,
+    projectContributors,
+} from "../../static";
 
 export default defineComponent({
     name: "ProjectForm",
@@ -122,58 +133,23 @@ export default defineComponent({
     },
 
     setup(props) {
-        const emitter: any =  inject('emitter')
-        const projectStatuses: Ref<Array<String>> = ref([
-            "Pending",
-            "Inprogress",
-            "Done",
-            "Revamped",
-        ]);
-
-        const projectCategories: Ref<Array<String>> = ref([
-            "Web Application",
-            "Mobile Application",
-            "Desktop Application",
-            "Others",
-        ]);
-
-        const projectClients: Ref<Array<String>> = ref([
-            "Meta",
-            "Citi Hardware",
-            "SM City",
-            "Microsoft",
-        ]);
-
-        const projectContributors: Ref<Array<String>> = ref([
-            "John Doe",
-            "Jane Doe",
-            "Paul Malik",
-            "Chris Thomas",
-        ]);
-
-        const projectCardColors: Ref<Array<String>> = ref([
-            "primary",
-            "info",
-            "success",
-            "warning",
-        ]);
+        const emitter: any = inject("emitter");
 
         function onCancel(): void {
-            emitter.emit('project-form-on-cancel', true)
+            emitter.emit("project-form-on-cancel", true);
         }
 
-        function onSubmit(): void {
-            emitter.emit('project-form-on-submit', props.form)
+        function submitForm(): void {
+            emitter.emit("project-form-on-submit", props.form);
         }
 
         return {
-            onSubmit,
+            submitForm,
             onCancel,
             projectStatuses,
             projectCategories,
             projectClients,
             projectContributors,
-            projectCardColors,
         };
     },
 });

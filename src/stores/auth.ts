@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { parse, stringify } from "zipson";
 
 export const useAuthStore = defineStore("auth", {
     state: () => ({
@@ -13,6 +14,15 @@ export const useAuthStore = defineStore("auth", {
         },
         logout() {
             this.isAuthenticated = false;
+        },
+    },
+    persist: {
+        storage: sessionStorage,
+        key: "auth",
+        paths: ["isAuthenticated"],
+        serializer: {
+            deserialize: parse,
+            serialize: stringify,
         },
     },
 });

@@ -1,5 +1,5 @@
 <template>
-    <v-toolbar prominent color="transparent" height="70">
+    <v-toolbar prominent color="transparent" height="70" >
         <v-app-bar-nav-icon>
             <v-icon> mdi-dots-grid </v-icon>
         </v-app-bar-nav-icon>
