@@ -40,3 +40,5 @@ export const useScreenSize = (): Object => {
 
   return screenSize
 };
+
+export const objectKeyHasValue = (obj: Object) => Object.values(obj).every(val => val !== undefined && val !== null) // Will return false if Object key is null, undefined, else true

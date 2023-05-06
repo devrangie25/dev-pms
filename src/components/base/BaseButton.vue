@@ -9,6 +9,7 @@
         :size="props.size"
         :to="props.to"
         :type="props.type"
+        :disabled="props.disabled"
     >
         <slot name="content" />
     </v-btn>
@@ -23,6 +24,11 @@ export default defineComponent({
     name: "BaseButton",
 
     props: {
+        disabled: {
+            type: Boolean,
+            default: false,
+            required: false,
+        },
         block: {
             type: Boolean,
             default: false,

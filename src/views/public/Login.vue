@@ -65,20 +65,26 @@
                     <v-row>
                         <v-col cols="12">
                             <v-text-field
+                                name="email"
+                                v-model="state.email"
                                 variant="outlined"
                                 placeholder="Email"
                                 hide-details="auto"
                                 prepend-inner-icon="mdi-email-outline"
+                                :error-messages="errorMessage.email"
                             />
                         </v-col>
-                        <v-col cols="12">
+                        <v-col cols="12"> 
                             <v-text-field
+                                name="password"
+                                v-model="state.password"
                                 variant="outlined"
                                 placeholder="Password"
                                 hide-details="auto"
                                 prepend-inner-icon="mdi-lock-outline"
                                 append-inner-icon="mdi-eye-outline"
                                 type="password"
+                                :error-messages="errorMessage.password"
                             />
                         </v-col>
                         <v-col cols="12">
@@ -113,13 +119,24 @@
                                 variant="flat"
                                 width="100%"
                                 height="56"
-                                @click="onLogin"
+                                @click="onSubmitCredentials"
+                                :disabled="isCheckingUserCredentials"
                             >
                                 <template v-slot:content>
                                     <span
-                                        class="text-white text-none text-button"
+                                        class="text-white text-none text-button d-flex align-center"
                                     >
-                                        Login
+                                        <base-loader
+                                            v-if="isCheckingUserCredentials"
+                                            size="sm"
+                                        />
+                                        <span class="ml-2">
+                                            {{
+                                                isCheckingUserCredentials
+                                                    ? "Logging in..."
+                                                    : "Login"
+                                            }}
+                                        </span>
                                     </span>
                                 </template>
                             </base-button>
@@ -149,9 +166,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject } from "vue";
+import { defineComponent, inject, reactive, Ref, computed, ref, watch, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "../../stores/auth";
+import useValidate from "@vuelidate/core";
+import { required, email, helpers } from "@vuelidate/validators";
+import { objectKeyHasValue } from '../../helpers'
 
 export default defineComponent({
     name: "PageLogin",
@@ -160,6 +180,36 @@ export default defineComponent({
         const supabase: any = inject("supabase");
         const authStore = useAuthStore();
         const router = useRouter();
+        const errorMessage: Ref<any> = ref({
+            email: "",
+            password: "",
+        });
+        const isCheckingUserCredentials: Ref<boolean> = ref(false);
+
+        const state = reactive({
+            email: "",
+            password: "",
+        });
+
+        const rules = computed(() => {
+            return {
+                email: {
+                    required: helpers.withMessage(
+                        "Email is required",
+                        required
+                    ),
+                    email: helpers.withMessage("Invalid email address", email)
+                },
+                password: {
+                    required: helpers.withMessage(
+                        "Password is required",
+                        required
+                    ),
+                },
+            };
+        });
+
+        const v$ = useValidate(rules, state);
 
         async function loginWithProvider() {
             try {
@@ -167,22 +217,70 @@ export default defineComponent({
                     provider: "google",
                 });
 
-                console.log('data', data)
-                debugger
+                console.log("data", data);
             } catch (error: any) {
                 console.error("Error captured", error);
             }
         }
 
-        function onLogin() {
-            authStore.login();
-            router.push({ name: "projects" });
-        }
-
         return {
             loginWithProvider,
-            onLogin
+            state,
+            errorMessage,
+            authStore,
+            router,
+            isCheckingUserCredentials,
+            v$,
         };
+    },
+
+    methods: {
+
+        async onBlurValidation(event : any) {
+            const isFormValid = await this.v$.$validate();
+            if (!isFormValid) {
+                if (this.v$.$errors.length > 0) {
+                    this.v$.$errors.forEach((error: any) => {
+                        if (event.target.name === error.$property) {
+                            this.errorMessage[error.$property] = error.$message;
+                        }
+                    });
+                }
+                return (this.isCheckingUserCredentials = false);
+            }
+        },
+
+        async onSubmitCredentials() {
+            try {
+                this.isCheckingUserCredentials = true;
+                const isFormValid = await this.v$.$validate();
+                if (!isFormValid) {
+                    if (this.v$.$errors.length > 0) {
+                        this.v$.$errors.forEach((error: any) => {
+                            this.errorMessage[error.$property] = error.$message;
+                        });
+                    }
+                    return (this.isCheckingUserCredentials = false);
+                } else {
+                    const checkUser: any = new Promise(
+                        (resolve: any, reject: any) => {
+                            setTimeout(() => {
+                                resolve();
+                            }, 3000);
+                        }
+                    );
+
+                    checkUser.then(() => {
+                        this.isCheckingUserCredentials = false;
+                        this.authStore.login();
+                        this.router.push({ name: "projects" });
+                    });
+                }
+            } catch (error) {
+                this.isCheckingUserCredentials = false;
+                console.error("An Error Occured", error);
+            }
+        },
     },
 });
 </script>
