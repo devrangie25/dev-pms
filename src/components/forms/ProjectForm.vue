@@ -119,7 +119,7 @@ import {
     projectStatuses,
     projectCategories,
     projectContributors,
-} from "../../static";
+} from "../../static/options";
 
 export default defineComponent({
     name: "ProjectForm",

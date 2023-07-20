@@ -4,7 +4,7 @@
         :block="props.block"
         :border="props.border"
         :color="props.color"
-        :density="density"
+        :density="buttonDensity"
         :icon="isIcon"
         :size="props.size"
         :to="props.to"
@@ -18,7 +18,7 @@
 <script lang="ts">
 import { defineComponent, ref, Ref } from "vue";
 
-export type Densities = "default" | "comfortable" | "compact";
+import { Densities } from "../../static/type";
 
 export default defineComponent({
     name: "BaseButton",
@@ -78,11 +78,11 @@ export default defineComponent({
 
     setup(props) {
         const initializedDensity: Ref<string> = ref(props.density);
-        const density: Densities = initializedDensity as unknown as Densities;
+        const buttonDensity: Densities = initializedDensity as unknown as Densities;
 
         return {
             props,
-            density
+            buttonDensity
         };
     },
 });

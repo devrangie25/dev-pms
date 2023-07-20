@@ -3,21 +3,23 @@ const projectStatuses: Array<String> = [
     "Inprogress",
     "Done",
     "Revamped",
-]
+];
 
 const projectCategories: Array<String> = [
     "Web Application",
     "Mobile Application",
     "Desktop Application",
     "Others",
-]
+];
 
 const projectClients: Array<String> = [
-    "Pending",
-    "Inprogress",
-    "Done",
-    "Revamped",
-]
+    "Google",
+    "Facebook",
+    "Apple",
+    "Youtube",
+];
+
+const projectSort: Array<String> = ["Date", "Created"];
 
 const projectContributors: Array<String> = [
     "John Doe",
@@ -29,11 +31,12 @@ const projectContributors: Array<String> = [
     "James Johnson",
     "Katty Perry",
     "Snoop Dogg",
-]
+];
 
 export {
+    projectSort,
     projectStatuses,
     projectCategories,
     projectClients,
-    projectContributors
-}
+    projectContributors,
+};
