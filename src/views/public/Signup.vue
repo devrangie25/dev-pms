@@ -1,6 +1,6 @@
 <template>
     <v-row no-gutters>
-        <v-col cols="6" class="login-card-section">
+        <v-col cols="12" lg="6" class="login-card-section">
             <v-card
                 color="transparent"
                 class="mx-auto rounded-lg pa-4"
@@ -62,31 +62,30 @@
 
                     <v-row>
                         <v-col cols="12">
-                            <v-text-field
-                                variant="outlined"
+                            <BaseInput 
+                                name="name"
                                 placeholder="Name"
-                                hide-details="auto"
-                                prepend-inner-icon="mdi-account-outline"
-                                type="text"
+                                prependInnerIcon="mdi-account-outline" 
+                                :errorMessages="errorMessage.name"
                             />
                         </v-col>
                         <v-col cols="12">
-                            <v-text-field
-                                variant="outlined"
+                            <BaseInput 
+                                name="email"
                                 placeholder="Email"
-                                hide-details="auto"
-                                prepend-inner-icon="mdi-email-outline"
-                                type="text"
+                                prependInnerIcon="mdi-email-outline" 
+                                :errorMessages="errorMessage.email"
                             />
                         </v-col>
                         <v-col cols="12">
-                            <v-text-field
-                                variant="outlined"
+                            <BaseInput 
+                                name="password"
                                 placeholder="Password"
-                                hide-details="auto"
-                                prepend-inner-icon="mdi-lock-outline"
-                                append-inner-icon="mdi-eye-outline"
-                                type="password"
+                                :type="showPassword ? 'text' : 'password'"
+                                prependInnerIcon="mdi-lock-outline" 
+                                :errorMessages="errorMessage.password"
+                                :appendInnerIcon="showPassword ? 'mdi-eye-off' : 'mdi-eye-outline'"
+                                @click:click-append-inner-icon="() => showPassword = !showPassword"
                             />
                         </v-col>
                     </v-row>
@@ -98,12 +97,24 @@
                                 variant="flat"
                                 width="100%"
                                 height="56"
+                                @click="onCreatingAccount"
+                                :disabled="isSubmittingDetails"
                             >
                                 <template v-slot:content>
                                     <span
-                                        class="text-white text-none text-button"
+                                        class="text-white text-none text-button d-flex align-center"
                                     >
-                                        Create account
+                                        <base-loader
+                                            v-if="isSubmittingDetails"
+                                            size="sm"
+                                        />
+                                        <span class="ml-2">
+                                            {{
+                                                isSubmittingDetails
+                                                    ? "Creating Account..."
+                                                    : "Create Account"
+                                            }}
+                                        </span>
                                     </span>
                                 </template>
                             </base-button>
@@ -116,7 +127,7 @@
                                 <span class="text-body-2">
                                     Already have an account?
                                     <router-link
-                                        to="/auth/login"
+                                        to="/login"
                                         class="text-decoration-none"
                                     >
                                         Login
@@ -132,16 +143,92 @@
     </v-row>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
+import { defineComponent, ref, Ref, computed, reactive } from 'vue'
+import useValidate from "@vuelidate/core";
+import { required, email, helpers, minLength } from "@vuelidate/validators";
 
-export default defineComponent({
-    name: "PageSignup",
+defineComponent({
+    name: 'PageSignup'
+})
 
-    setup() {
-        return {};
-    },
+const showPassword = ref(false)
+const isSubmittingDetails = ref(false)
+
+const state = reactive({
+    name: "",
+    email: "",
+    password: "",
 });
+
+const errorMessage: Ref<any> = ref({
+    name: "",
+    email: "",
+    password: "",
+});
+
+const rules = computed(() => {
+    return {
+        name: {
+            required: helpers.withMessage(
+                "Name is required",
+                required
+            ),
+        },
+        email: {
+            required: helpers.withMessage(
+                "Email is required",
+                required
+            ),
+            email: helpers.withMessage("Invalid email address", email)
+        },
+        password: {
+            required: helpers.withMessage(
+                "Password is required",
+                required
+            ),
+            minLength: helpers.withMessage(
+                "Password should at least 8 characters",
+                minLength(8)
+            ),
+        },
+    };
+});
+
+const v$ = useValidate(rules, state);
+
+const onCreatingAccount = async() => {
+    try {
+        isSubmittingDetails.value = true;
+        const isFormValid = await v$.value.$validate();
+        if (!isFormValid) {
+            console.log("v$.value.$errors", v$.value.$errors)
+            if (v$.value.$errors.length > 0) {
+                v$.value.$errors.forEach((error: any) => {
+                    errorMessage.value[error.$property] = error.$message;
+                });
+            }
+            return (isSubmittingDetails.value = false);
+        } else {
+            const checkUser: any = new Promise(
+                (resolve: any, reject: any) => {
+                    setTimeout(() => {
+                        resolve();
+                    }, 3000);
+                }
+            );
+
+            // checkUser.then(() => {
+            //     isCheckingUserCredentials = false;
+            //     authStore.login();
+            //     router.push({ name: "projects" });
+            // });
+        }
+    } catch (error) {
+        isSubmittingDetails.value = false;
+        console.error("An Error Occured", error);
+    }
+}
 </script>
 
 <style scoped>

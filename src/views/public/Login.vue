@@ -64,27 +64,26 @@
 
                     <v-row>
                         <v-col cols="12">
-                            <v-text-field
-                                name="email"
+                            <BaseInput 
                                 v-model="state.email"
-                                variant="outlined"
+                                name="email"
                                 placeholder="Email"
-                                hide-details="auto"
-                                prepend-inner-icon="mdi-email-outline"
-                                :error-messages="errorMessage.email"
+                                prependInnerIcon="mdi-email-outline" 
+                                :errorMessages="errorMessage.email"
+                                @update:model-value="onUpdateInputEmail($event)"
                             />
                         </v-col>
-                        <v-col cols="12"> 
-                            <v-text-field
-                                name="password"
+                        <v-col cols="12">
+                            <BaseInput 
                                 v-model="state.password"
-                                variant="outlined"
+                                name="password"
                                 placeholder="Password"
-                                hide-details="auto"
-                                prepend-inner-icon="mdi-lock-outline"
-                                append-inner-icon="mdi-eye-outline"
-                                type="password"
-                                :error-messages="errorMessage.password"
+                                :type="showPassword ? 'text' : 'password'"
+                                prependInnerIcon="mdi-lock-outline" 
+                                :appendInnerIcon="showPassword ? 'mdi-eye-off' : 'mdi-eye-outline'"
+                                :errorMessages="errorMessage.password"
+                                @click:click-append-inner-icon="() => showPassword = !showPassword"
+                                @update:model-value="onUpdateInputPassword($event)"
                             />
                         </v-col>
                         <v-col cols="12">
@@ -149,7 +148,7 @@
                                 <span class="text-body-2">
                                     Don't have an account?
                                     <router-link
-                                        to="/auth/signup"
+                                        to="/signup"
                                         class="text-decoration-none"
                                     >
                                         Create Account
@@ -191,6 +190,8 @@ export default defineComponent({
             password: "",
         });
 
+        const showPassword = ref(false)
+
         const rules = computed(() => {
             return {
                 email: {
@@ -230,11 +231,22 @@ export default defineComponent({
             authStore,
             router,
             isCheckingUserCredentials,
+            showPassword,
             v$,
         };
     },
 
     methods: {
+
+        onUpdateInputEmail(event: any) {
+            console.log("on-update-input-email", event)
+            this.errorMessage['email'] = this.errorMessage['email'] && !event ? '' : this.errorMessage['email']
+        },
+
+        onUpdateInputPassword(event: any) {
+            console.log("on-update-input-password", event)
+            this.errorMessage['password'] = this.errorMessage['password'] && !event ? '' : this.errorMessage['password']
+        },
 
         async onBlurValidation(event : any) {
             const isFormValid = await this.v$.$validate();
@@ -255,6 +267,7 @@ export default defineComponent({
                 this.isCheckingUserCredentials = true;
                 const isFormValid = await this.v$.$validate();
                 if (!isFormValid) {
+                    console.log("this.v$.$errors", this.v$.$errors)
                     if (this.v$.$errors.length > 0) {
                         this.v$.$errors.forEach((error: any) => {
                             this.errorMessage[error.$property] = error.$message;

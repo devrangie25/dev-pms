@@ -83,7 +83,7 @@ const routes: RouteRecordRaw[] = [
         beforeEnter: authGuard,
     },
     {
-        path: '/auth/login',
+        path: '/login',
         name: 'login',
         component: Login,
         meta: {
@@ -94,7 +94,7 @@ const routes: RouteRecordRaw[] = [
         beforeEnter: guestGuard,
     },
     {
-        path: '/auth/signup',
+        path: '/signup',
         name: 'signup',
         component: Signup,
         meta: {
