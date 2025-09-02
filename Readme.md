@@ -8,3 +8,26 @@ npm start
 
 ## Check for Sequelize Commands
 npx sequelize --help
+
+## Linux Config.json
+{
+  "development": {
+    "username": "devmysql",
+    "password": "devRangie25",
+    "database": "todo_db",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}
+
+## Windows Config.json
+{
+  "development": {
+    "username": "root",
+    "password": "null",
+    "database": "todo_db",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}
+
